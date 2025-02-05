@@ -24,6 +24,7 @@ body {
     padding: 10px;
     overflow-y: auto;
     border-bottom: 1px solid #ddd;
+    white-space: pre-wrap; /* Перенос текста на новую строку */
 }
 
 #input-area {
@@ -37,6 +38,10 @@ body {
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-right: 10px;
+    resize: none; /* Отключаем ручное изменение размера */
+    overflow: hidden; /* Скрываем полосу прокрутки */
+    min-height: 40px; /* Минимальная высота */
+    max-height: 120px; /* Максимальная высота */
 }
 
 #send-button {
