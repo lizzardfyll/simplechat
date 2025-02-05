@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Простой чат</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="chat">
+        <div id="messages"></div>
+        <div id="input-area">
+            <input type="text" id="message-input" placeholder="Введите сообщение..." disabled>
+            <button id="send-button" disabled>Отправить</button>
+        </div>
+    </div>
+    <div id="login-modal">
+        <div id="login-box">
+            <input type="text" id="username-input" placeholder="Введите ваш логин">
+            <button id="login-button">Войти</button>
+        </div>
+    </div>
+    <script src="client.js"></script>
+</body>
+</html>
