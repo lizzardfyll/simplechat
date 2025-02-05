@@ -1,4 +1,4 @@
-const socket = new WebSocket('ws://localhost:8080');
+const socket = new WebSocket('wss://simplechat-1huj.onrender.com');
 
 const messagesDiv = document.getElementById('messages');
 const messageInput = document.getElementById('message-input');
