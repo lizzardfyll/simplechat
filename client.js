@@ -70,10 +70,11 @@ socket.addEventListener('message', (event) => {
         const messageElement = document.createElement('div');
         if (data.username === 'Система') {
             messageElement.classList.add('system-message'); // Добавляем класс для системных сообщений
+            messageElement.textContent = data.message; // Для системных сообщений
         } else {
+            // Отображаем имя пользователя и сообщение
             messageElement.innerHTML = `<strong style="color: ${data.color};">${data.username}:</strong> ${data.message}`;
         }
-        messageElement.textContent = data.message; // Для системных сообщений
         messagesDiv.appendChild(messageElement);
         messagesDiv.scrollTop = messagesDiv.scrollHeight; // Прокрутка вниз
     }
