@@ -6,6 +6,7 @@ const sendButton = document.getElementById('send-button');
 const loginModal = document.getElementById('login-modal');
 const usernameInput = document.getElementById('username-input');
 const loginButton = document.getElementById('login-button');
+const usersList = document.getElementById('users-list');
 
 let username = '';
 let userColor = generateRandomColor(); // Генерация случайного цвета для пользователя
@@ -60,8 +61,30 @@ function sendMessage() {
 // Получение сообщений от сервера
 socket.addEventListener('message', (event) => {
     const data = JSON.parse(event.data);
-    const messageElement = document.createElement('div');
-    messageElement.innerHTML = `<strong style="color: ${data.color};">${data.username}:</strong> ${data.message}`;
-    messagesDiv.appendChild(messageElement);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight; // Прокрутка вниз
+
+    if (data.type === 'updateUsers') {
+        // Обновляем список участников
+        updateUsersList(data.users);
+    } else if (data.type === 'message') {
+        // Отображаем сообщение
+        const messageElement = document.createElement('div');
+        if (data.username === 'Система') {
+            messageElement.classList.add('system-message'); // Добавляем класс для системных сообщений
+        } else {
+            messageElement.innerHTML = `<strong style="color: ${data.color};">${data.username}:</strong> ${data.message}`;
+        }
+        messageElement.textContent = data.message; // Для системных сообщений
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Прокрутка вниз
+    }
 });
+
+// Функция для обновления списка участников
+function updateUsersList(users) {
+    usersList.innerHTML = ''; // Очищаем список
+    users.forEach((user) => {
+        const userElement = document.createElement('div');
+        userElement.textContent = user;
+        usersList.appendChild(userElement);
+    });
+}

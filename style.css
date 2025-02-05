@@ -9,12 +9,17 @@ body {
     background-color: #f0f0f0;
 }
 
-#chat {
-    width: 800px;
+#chat-container {
+    display: flex;
+    width: 800px; /* Увеличиваем ширину контейнера */
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+}
+
+#chat {
+    flex: 3;
     display: flex;
     flex-direction: column;
 }
@@ -45,6 +50,8 @@ body {
 }
 
 #send-button {
+    width: 100px; /* Фиксированная ширина */
+    height: 40px; /* Фиксированная высота */
     padding: 8px 16px;
     background-color: #28a745;
     color: #fff;
@@ -56,6 +63,38 @@ body {
 #send-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+#online-users {
+    flex: 1;
+    padding: 10px;
+    border-left: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+#online-users h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+#users-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#users-list div {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    color: #555;
+}
+
+.system-message {
+    opacity: 0.8; /* Прозрачность */
+    text-decoration: underline; /* Подчёркивание */
+    font-size: 0.9em; /* Меньший шрифт */
+    color: #555; /* Цвет текста */
 }
 
 #login-modal {

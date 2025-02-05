@@ -7,11 +7,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="chat">
-        <div id="messages"></div>
-        <div id="input-area">
-            <textarea id="message-input" placeholder="Введите сообщение..." disabled></textarea>
-            <button id="send-button" disabled>Отправить</button>
+    <div id="chat-container">
+        <div id="chat">
+            <div id="messages"></div>
+            <div id="input-area">
+                <textarea id="message-input" placeholder="Введите сообщение..." disabled></textarea>
+                <button id="send-button" disabled>Отправить</button>
+            </div>
+        </div>
+        <div id="online-users">
+            <h3>Online</h3>
+            <div id="users-list"></div>
         </div>
     </div>
     <div id="login-modal">
