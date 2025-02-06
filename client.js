@@ -62,23 +62,33 @@ function sendMessage() {
 socket.addEventListener('message', (event) => {
     const data = JSON.parse(event.data);
 
-    if (data.type === 'updateUsers') {
+    if (data.type === 'history') {
+        // Обработка истории сообщений
+        data.messages.forEach((msg) => {
+            displayMessage(msg);
+        });
+    } else if (data.type === 'updateUsers') {
         // Обновляем список участников
         updateUsersList(data.users);
     } else if (data.type === 'message') {
         // Отображаем сообщение
-        const messageElement = document.createElement('div');
-        if (data.username === 'Система') {
-            messageElement.classList.add('system-message'); // Добавляем класс для системных сообщений
-            messageElement.textContent = data.message; // Для системных сообщений
-        } else {
-            // Отображаем имя пользователя и сообщение
-            messageElement.innerHTML = `<strong style="color: ${data.color};">${data.username}:</strong> ${data.message}`;
-        }
-        messagesDiv.appendChild(messageElement);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Прокрутка вниз
+        displayMessage(data);
     }
 });
+
+// Функция для отображения сообщения
+function displayMessage(data) {
+    const messageElement = document.createElement('div');
+    if (data.username === 'Система') {
+        messageElement.classList.add('system-message'); // Добавляем класс для системных сообщений
+        messageElement.textContent = data.message; // Для системных сообщений
+    } else {
+        // Отображаем имя пользователя и сообщение
+        messageElement.innerHTML = `<strong style="color: ${data.color};">${data.username}:</strong> ${data.message}`;
+    }
+    messagesDiv.appendChild(messageElement);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight; // Прокрутка вниз
+}
 
 // Функция для обновления списка участников
 function updateUsersList(users) {
