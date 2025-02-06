@@ -1,7 +1,6 @@
 const express = require('express');
 const WebSocket = require('ws');
 const path = require('path');
-const fs = require('fs');
 
 const app = express();
 const server = app.listen(process.env.PORT || 8080, () => {
@@ -15,20 +14,9 @@ app.use(express.static(path.join(__dirname)));
 const wss = new WebSocket.Server({ server });
 
 const users = new Set(); // Множество для хранения участников
-const messageHistoryFile = 'messageHistory.json';
-
-// Загружаем историю сообщений из файла
-let messageHistory = [];
-if (fs.existsSync(messageHistoryFile)) {
-    const data = fs.readFileSync(messageHistoryFile);
-    messageHistory = JSON.parse(data);
-}
 
 wss.on('connection', (ws) => {
     let username = '';
-
-    // Отправляем историю сообщений новому пользователю
-    ws.send(JSON.stringify({ type: 'history', messages: messageHistory }));
 
     ws.on('message', (message) => {
         const data = JSON.parse(message);
@@ -39,9 +27,6 @@ wss.on('connection', (ws) => {
             broadcastUsers(); // Обновляем список участников
             broadcast({ type: 'message', username: 'Система', message: `${username} присоединился к чату`, color: '#000' });
         } else if (data.type === 'message') {
-            // Сохраняем сообщение в истории
-            messageHistory.push(data);
-            fs.writeFileSync(messageHistoryFile, JSON.stringify(messageHistory)); // Записываем в файл
             broadcast(data);
         }
     });
