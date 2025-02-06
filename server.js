@@ -1,7 +1,7 @@
 const express = require('express');
 const WebSocket = require('ws');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs'); // Модуль для работы с файлами
 
 const app = express();
 const server = app.listen(process.env.PORT || 8080, () => {
@@ -15,13 +15,32 @@ app.use(express.static(path.join(__dirname)));
 const wss = new WebSocket.Server({ server });
 
 const users = new Set(); // Множество для хранения участников
-const messageHistoryFile = 'messageHistory.json';
 
-// Загружаем историю сообщений из файла
+// Путь к файлу history.json в файловой системе Render
+const historyFile = path.join(__dirname, 'history.json');
+
+// Загружаем историю сообщений из файла (если файл существует)
 let messageHistory = [];
-if (fs.existsSync(messageHistoryFile)) {
-    const data = fs.readFileSync(messageHistoryFile);
-    messageHistory = JSON.parse(data);
+if (fs.existsSync(historyFile)) {
+    try {
+        const historyData = fs.readFileSync(historyFile, 'utf8');
+        if (historyData.trim()) { // Проверяем, что файл не пуст
+            messageHistory = JSON.parse(historyData);
+        }
+    } catch (error) {
+        console.error('Ошибка при чтении файла history.json:', error);
+        // Если файл повреждён, создаём новый пустой массив
+        messageHistory = [];
+    }
+} else {
+    console.log('Файл history.json не существует. Создаём новый.');
+    // Создаём пустой файл history.json
+    fs.writeFileSync(historyFile, JSON.stringify(messageHistory), 'utf8');
+}
+
+// Функция для сохранения истории в файл
+function saveHistory() {
+    fs.writeFileSync(historyFile, JSON.stringify(messageHistory), 'utf8');
 }
 
 wss.on('connection', (ws) => {
@@ -39,9 +58,13 @@ wss.on('connection', (ws) => {
             broadcastUsers(); // Обновляем список участников
             broadcast({ type: 'message', username: 'Система', message: `${username} присоединился к чату`, color: '#000' });
         } else if (data.type === 'message') {
-            // Сохраняем сообщение в истории
-            messageHistory.push(data);
-            fs.writeFileSync(messageHistoryFile, JSON.stringify(messageHistory)); // Записываем в файл
+            // Сохраняем сообщение в историю
+            messageHistory.push({ username: data.username, message: data.message, color: data.color });
+
+            // Сохраняем историю в файл
+            saveHistory();
+
+            // Пересылаем сообщение всем клиентам
             broadcast(data);
         }
     });
