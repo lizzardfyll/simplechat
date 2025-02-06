@@ -1,6 +1,6 @@
 const socket = new WebSocket('wss://simplechat-1huj.onrender.com');
 
-const messagesDiv = document.getElementById('messages');
+const messageHistory = document.getElementById('messages');
 const messageInput = document.getElementById('message-input');
 const sendButton = document.getElementById('send-button');
 const loginModal = document.getElementById('login-modal');
@@ -62,21 +62,33 @@ function sendMessage() {
 socket.addEventListener('message', (event) => {
     const data = JSON.parse(event.data);
 
-    if (data.type === 'updateUsers') {
+    if (data.type === 'history') {
+        // Отображаем историю сообщений
+        data.messages.forEach((msg) => {
+            const messageElement = document.createElement('div');
+            if (msg.username === 'Система') {
+                messageElement.classList.add('system-message');
+                messageElement.textContent = msg.message;
+            } else {
+                messageElement.innerHTML = `<strong style="color: ${msg.color};">${msg.username}:</strong> ${msg.message}`;
+            }
+            messageHistory.appendChild(messageElement);
+        });
+        messageHistory.scrollTop = messageHistory.scrollHeight; // Прокрутка вниз
+    } else if (data.type === 'updateUsers') {
         // Обновляем список участников
         updateUsersList(data.users);
     } else if (data.type === 'message') {
-        // Отображаем сообщение
+        // Отображаем новое сообщение
         const messageElement = document.createElement('div');
         if (data.username === 'Система') {
-            messageElement.classList.add('system-message'); // Добавляем класс для системных сообщений
-            messageElement.textContent = data.message; // Для системных сообщений
+            messageElement.classList.add('system-message');
+            messageElement.textContent = data.message;
         } else {
-            // Отображаем имя пользователя и сообщение
             messageElement.innerHTML = `<strong style="color: ${data.color};">${data.username}:</strong> ${data.message}`;
         }
-        messagesDiv.appendChild(messageElement);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Прокрутка вниз
+        messageHistory.appendChild(messageElement);
+        messageHistory.scrollTop = messageHistory.scrollHeight; // Прокрутка вниз
     }
 });
 
